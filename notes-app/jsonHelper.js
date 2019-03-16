@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const fileName = '1-json.json'
+const fileName = '1-json.json';
 const buffered = fs.readFileSync(fileName);
 
 const data = JSON.parse(buffered.toString());
