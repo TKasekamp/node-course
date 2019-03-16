@@ -1,4 +1,5 @@
 const fs = require('fs');
+const chalk = require('chalk');
 
 const filePath = 'notes.json';
 
@@ -21,9 +22,9 @@ const addNote = (note) => {
 
   if (duplicateNotes.length === 0) {
     writeNotes([...notes, note])
-    console.log('Note added')
+    console.log(chalk.green('Note added'))
   } else {
-    console.log(`Note ${note.title} taken!`)
+    console.log(chalk.red(`Note ${note.title} taken!`))
   }
 
 }
@@ -35,14 +36,12 @@ const getNotes = () => {
 const removeNote = (title) => {
   const notes = loadNotes()
 
-  const filteredNotes = notes.filter(n => {
-    if (n.title === title) {
-      console.log(`Removing note ${title}`)
-      return false
-    } else {
-      return true
-    }
-  })
+  const filteredNotes = notes.filter(n => n.title !== title)
+  if (notes.length === filteredNotes.length) {
+    console.log(chalk.red.inverse(`Found no notes to remove!`))
+  } else {
+    console.log(chalk.green.inverse(`Removing note ${title}`))
+  }
   writeNotes(filteredNotes)
 }
 
