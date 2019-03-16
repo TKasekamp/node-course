@@ -32,7 +32,22 @@ const getNotes = () => {
   return loadNotes()
 }
 
+const removeNote = (title) => {
+  const notes = loadNotes()
+
+  const filteredNotes = notes.filter(n => {
+    if (n.title === title) {
+      console.log(`Removing note ${title}`)
+      return false
+    } else {
+      return true
+    }
+  })
+  writeNotes(filteredNotes)
+}
+
 module.exports = {
   addNote,
-  getNotes
+  getNotes,
+  removeNote
 };
