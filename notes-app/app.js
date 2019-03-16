@@ -1,15 +1,29 @@
-const chalk = require('chalk')
+const chalk = require('chalk');
 const validator = require('validator');
 const yargs = require('yargs');
 
-const {createNotes} = require('./notes')
+const {createNotes} = require('./notes');
 console.log(createNotes());
+
+yargs.version('1.1.0');
 
 const commands = [
   {
     command: 'add',
     describe: 'add a new note',
-    handler: () => console.log('adding new note')
+    builder: {
+      title: {
+        describe: 'note title',
+        demandOption: true,
+        type: 'string'
+      },
+      body: {
+        describe: 'note body',
+        demandOption: true,
+        type: 'string'
+      }
+    },
+    handler: argv => console.log('adding new note', argv.title, argv.body)
   },
   {
     command: 'remove',
@@ -26,10 +40,8 @@ const commands = [
     describe: 'read note',
     handler: () => console.log('reading notes')
   }
-]
+];
 
-yargs.version('1.1.0')
+commands.forEach(c => yargs.command(c));
 
-commands.forEach(c => yargs.command(c))
-
-console.log(yargs.argv)
+yargs.parse();
