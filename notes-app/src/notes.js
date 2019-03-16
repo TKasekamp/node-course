@@ -18,9 +18,9 @@ const writeNotes = (notes) => {
 
 const addNote = (note) => {
   const notes = loadNotes()
-  const duplicateNotes = notes.filter(n => n.title === note.title)
+  const duplicateNote = notes.find(n => n.title === note.title)
 
-  if (duplicateNotes.length === 0) {
+  if (!duplicateNote) {
     writeNotes([...notes, note])
     console.log(chalk.green('Note added'))
   } else {
@@ -48,8 +48,20 @@ const removeNote = (title) => {
   writeNotes(filteredNotes)
 }
 
+const getNote = (title) => {
+  const notes = loadNotes();
+  const note = notes.find(n => n.title === title);
+  if (note) {
+    console.log(`${chalk.green.bold(`Found note`)} title: ${note.title} body: ${note.body}`)
+  } else {
+    console.log(chalk.red(`No note found!`))
+  }
+
+}
+
 module.exports = {
   addNote,
+  getNote,
   listNotes,
   removeNote
 };
