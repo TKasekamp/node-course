@@ -5,6 +5,11 @@ const {mapBoxRequest} = require('./geocode');
 
 console.log(process.argv)
 const searchTerm = process.argv[2];
+
+if (!searchTerm) {
+  console.log('no search term provided')
+  return process.exit(1)
+}
 mapBoxRequest(searchTerm).then(
   coords => {
     console.log(coords)
