@@ -32,8 +32,9 @@ MongoClient.connect(connectionURL, {useNewUrlParser: true}, (error, client) => {
   // const docs = [{name: 'Jen', age: 28}, {name: 'Gunther', age: 43}];
   // db.collection('users').insertMany(docs, callback)
   // insertTasks(db)
-  lastTask(db)
-  notCompleted(db)
+  // lastTask(db)
+  // notCompleted(db)
+  completeAll(db)
 });
 
 const insertTasks = (db) => {
@@ -50,4 +51,10 @@ const lastTask = (db) => {
 
 const notCompleted = (db) => {
   db.collection('tasks').find({completed: false}).toArray(callback)
+}
+
+const completeAll = (db) => {
+  db.collection('tasks').updateMany({completed: false}, {$set: {completed: true}}).then(
+    result => console.log(result.modifiedCount)
+  )
 }
