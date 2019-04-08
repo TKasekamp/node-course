@@ -34,7 +34,8 @@ MongoClient.connect(connectionURL, {useNewUrlParser: true}, (error, client) => {
   // insertTasks(db)
   // lastTask(db)
   // notCompleted(db)
-  completeAll(db)
+  // completeAll(db)
+  return deleteWorld(db)
 });
 
 const insertTasks = (db) => {
@@ -56,5 +57,11 @@ const notCompleted = (db) => {
 const completeAll = (db) => {
   db.collection('tasks').updateMany({completed: false}, {$set: {completed: true}}).then(
     result => console.log(result.modifiedCount)
+  )
+}
+
+const deleteWorld = (db) => {
+  return db.collection('tasks').deleteOne({description: 'World'}).then(
+    result => console.log(result)
   )
 }
