@@ -40,8 +40,24 @@ const createModel = model => async (req, res) => {
   }
 };
 
+const updateModel = model => async (req, res) => {
+  try {
+    const m = await model.findByIdAndUpdate(req.params.id, req.body, {new: true, runValidators: true});
+    if (!m) {
+      return res.status(404).send()
+    }
+    res.send(m)
+  } catch (e) {
+    res.status(500).send(error)
+  }
+};
+
 app.post('/users', (req, res) => {
   createModel(User)(req, res)
+});
+
+app.patch('/users/:id', (req, res) => {
+  updateModel(User)(req, res)
 });
 
 app.get('/users', (req, res) => {
@@ -54,6 +70,10 @@ app.get('/users/:id', (req, res) => {
 
 app.post('/tasks', (req, res) => {
   createModel(Task)(req, res)
+});
+
+app.patch('/tasks/:id', (req, res) => {
+  updateModel(Task)(req, res)
 });
 
 app.get('/tasks', (req, res) => {
