@@ -8,33 +8,36 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-const getList = model => (req, res) => {
-  model.find({}).then(models => {
+const getList = model => async (req, res) => {
+  try {
+    const models = await model.find({});
     res.status(200).send(models)
-  }).catch(error => {
+  } catch (error) {
     res.status(500).send(error)
-  })
+  }
 };
 
-const getById = model => (req, res) => {
-  model.findById(req.params.id).then(m => {
+const getById = model => async (req, res) => {
+  try {
+    const m = await model.findById(req.params.id)
     if (!m) {
       return res.status(404).send()
     }
     res.status(200).send(m)
-  }).catch(error => {
+  } catch (error) {
     res.status(500).send(error)
-  })
+  }
 };
 
-const createModel = model => (req, res) => {
+const createModel = model => async (req, res) => {
   const m = new model(req.body);
 
-  m.save().then(() => {
+  try {
+    await m.save();
     res.status(201).send(m)
-  }).catch(error => {
+  } catch (e) {
     res.status(400).send(error)
-  })
+  }
 };
 
 app.post('/users', (req, res) => {
