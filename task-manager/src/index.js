@@ -8,6 +8,14 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
+const updateCheck = (req, res, allowedUpdates) => {
+  const updates = Object.keys(req.body);
+  const isValidOperation = updates.every(update => allowedUpdates.includes(update));
+  if (!isValidOperation) {
+    return res.status(400).send({error: 'Invalid update'})
+  }
+}
+
 const getList = model => async (req, res) => {
   try {
     const models = await model.find({});
@@ -48,7 +56,7 @@ const updateModel = model => async (req, res) => {
     }
     res.send(m)
   } catch (e) {
-    res.status(500).send(error)
+    res.status(500).send(e)
   }
 };
 
@@ -57,6 +65,8 @@ app.post('/users', (req, res) => {
 });
 
 app.patch('/users/:id', (req, res) => {
+  const allowedUpdates = ['name', 'email', 'password', 'age'];
+  updateCheck(req, res, allowedUpdates);
   updateModel(User)(req, res)
 });
 
@@ -73,6 +83,8 @@ app.post('/tasks', (req, res) => {
 });
 
 app.patch('/tasks/:id', (req, res) => {
+  const allowedUpdates = ['description', 'completed'];
+  updateCheck(req, res, allowedUpdates);
   updateModel(Task)(req, res)
 });
 
