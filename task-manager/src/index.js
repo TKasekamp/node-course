@@ -60,6 +60,19 @@ const updateModel = model => async (req, res) => {
   }
 };
 
+const deleteModel = model => async (req, res) => {
+  try {
+    const m = await model.findByIdAndDelete(req.params.id);
+    if (!m) {
+      return res.status(404).send()
+    }
+    res.send(m)
+  } catch (e) {
+    res.status(500).send(e)
+  }
+};
+
+
 app.post('/users', (req, res) => {
   createModel(User)(req, res)
 });
@@ -78,6 +91,10 @@ app.get('/users/:id', (req, res) => {
   getById(User)(req, res)
 });
 
+app.delete('/users/:id', (req, res) => {
+  deleteModel(User)(req, res)
+});
+
 app.post('/tasks', (req, res) => {
   createModel(Task)(req, res)
 });
@@ -94,6 +111,10 @@ app.get('/tasks', (req, res) => {
 
 app.get('/tasks/:id', (req, res) => {
   getById(Task)(req, res)
+});
+
+app.delete('/tasks/:id', (req, res) => {
+  deleteModel(Task)(req, res)
 });
 
 app.listen(port, () => {
