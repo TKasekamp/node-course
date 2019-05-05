@@ -6,45 +6,59 @@ const Task = require('./models/task');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.json())
+app.use(express.json());
 
-app.post('/users', (req, res) => {
-  const user = new User(req.body);
+const getList = model => (req, res) => {
+  model.find({}).then(models => {
+    res.status(200).send(models)
+  }).catch(error => {
+    res.status(500).send(error)
+  })
+};
 
-  user.save().then(() => {
-    res.status(201).send(user)
+const getById = model => (req, res) => {
+  model.findById(req.params.id).then(m => {
+    if (!m) {
+      return res.status(404).send()
+    }
+    res.status(200).send(m)
+  }).catch(error => {
+    res.status(500).send(error)
+  })
+};
+
+const createModel = model => (req, res) => {
+  const m = new model(req.body);
+
+  m.save().then(() => {
+    res.status(201).send(m)
   }).catch(error => {
     res.status(400).send(error)
   })
+};
+
+app.post('/users', (req, res) => {
+  createModel(User)(req, res)
 });
 
 app.get('/users', (req, res) => {
-  User.find({}).then((users) => {
-    res.status(200).send(users)
-  }).catch(error => {
-    res.status(500).send(error)
-  })
+  getList(User)(req, res)
 });
 
 app.get('/users/:id', (req, res) => {
-  User.findById(req.params.id).then((user) => {
-    if (!user) {
-      return res.status(404).send()
-    }
-    res.status(200).send(user)
-  }).catch(error => {
-    res.status(500).send(error)
-  })
+  getById(User)(req, res)
 });
 
 app.post('/tasks', (req, res) => {
-  const task = new Task(req.body);
+  createModel(Task)(req, res)
+});
 
-  task.save().then(() => {
-    res.status(201).send(task)
-  }).catch(error => {
-    res.status(400).send(error)
-  });
+app.get('/tasks', (req, res) => {
+  getList(Task)(req, res)
+});
+
+app.get('/tasks/:id', (req, res) => {
+  getById(Task)(req, res)
 });
 
 app.listen(port, () => {
